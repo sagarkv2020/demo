@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,6 +63,16 @@ public class EmployeeServiceTest {
         assertEquals(result.size(), 2);
     }
 
+    @Test
+    public void testGetAllEmployeesWhereSalaryGreaterWithNull() throws Exception {
+        // Setup
+        when(employeeRepository.getAllEmployees()).thenReturn(null);
+        // Run the test
+        final List<EmployeeEntity> result = employeeServiceUnderTest.getAllEmployeesWhereSalaryGreater(12000);
+        // Verify the results
+        assertNull(result);
+    }
+
     @Test(expected = IOException.class)
     public void testGetAllEmployeesWhereSalaryGreater_ThrowsIOException() throws Exception {
         // Setup
@@ -89,6 +98,17 @@ public class EmployeeServiceTest {
 
         // Verify the results
         assertEquals(result.get(0).getEmployeeSalary(), 12000);
+    }
+
+    @Test
+    public void testGetEmployeeWithSalaryWithNull() throws Exception {
+        // Setup
+        when(employeeRepository.getAllEmployees()).thenReturn(null);
+        // Run the test
+        final List<EmployeeEntity> result = employeeServiceUnderTest.getEmployeeWithSalary(false);
+
+        // Verify the results
+        assertNull(result);
     }
 
     @Test(expected = IOException.class)

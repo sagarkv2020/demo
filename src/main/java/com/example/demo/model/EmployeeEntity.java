@@ -16,6 +16,17 @@ public class EmployeeEntity {
     @JsonProperty("profile_image")
     private String profileImage;
 
+    public EmployeeEntity() {
+    }
+
+    public EmployeeEntity(int id, String employeeName, int employeeSalary, int employeeAge, String profileImage) {
+        this.id = id;
+        this.employeeName = employeeName;
+        this.employeeSalary = employeeSalary;
+        this.employeeAge = employeeAge;
+        this.profileImage = profileImage;
+    }
+
     public int getId() {
         return id;
     }

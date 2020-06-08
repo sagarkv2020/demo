@@ -57,16 +57,4 @@ public class DemoController {
         return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
     }
 
-//    @GetMapping("/employees/age/{age}")
-//    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesWhereAgeIsLess(@PathVariable Integer age) throws IOException, ParseException {
-//        List<EmployeeEntity> list = service.getAllEmployeesWhereAgeIsLess(age);
-//        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/employees/{id}")
-//    public ResponseEntity<EmployeeEntity> getEmployeeByProvidedId(@PathVariable Integer id) throws IOException, ParseException {
-//        EmployeeEntity employeeEntity = service.getEmployeeByProvidedId(id);
-//        return new ResponseEntity<>(employeeEntity, new HttpHeaders(), HttpStatus.OK);
-//    }
-
 }
