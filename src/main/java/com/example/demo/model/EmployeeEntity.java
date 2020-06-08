@@ -1,12 +1,20 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeEntity {
 
     private int id;
-    private String employee_name;
-    private int employee_salary;
-    private int employee_age;
-    private String profile_image;
+    @JsonProperty("employee_name")
+    private String employeeName;
+    @JsonProperty("employee_salary")
+    private int employeeSalary;
+    @JsonProperty("employee_age")
+    private int employeeAge;
+    @JsonProperty("profile_image")
+    private String profileImage;
 
     public int getId() {
         return id;
@@ -16,35 +24,35 @@ public class EmployeeEntity {
         this.id = id;
     }
 
-    public String getEmployee_name() {
-        return employee_name;
+    public String getEmployeeName() {
+        return employeeName;
     }
 
-    public void setEmployee_name(String employee_name) {
-        this.employee_name = employee_name;
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
-    public int getEmployee_salary() {
-        return employee_salary;
+    public int getEmployeeSalary() {
+        return employeeSalary;
     }
 
-    public void setEmployee_salary(int employee_salary) {
-        this.employee_salary = employee_salary;
+    public void setEmployeeSalary(int employeeSalary) {
+        this.employeeSalary = employeeSalary;
     }
 
-    public int getEmployee_age() {
-        return employee_age;
+    public int getEmployeeAge() {
+        return employeeAge;
     }
 
-    public void setEmployee_age(int employee_age) {
-        this.employee_age = employee_age;
+    public void setEmployeeAge(int employeeAge) {
+        this.employeeAge = employeeAge;
     }
 
-    public String getProfile_image() {
-        return profile_image;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setProfile_image(String profile_image) {
-        this.profile_image = profile_image;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
