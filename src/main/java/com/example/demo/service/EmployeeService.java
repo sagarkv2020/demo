@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.dao.IEmployeeRepository;
 import com.example.demo.model.EmployeeEntity;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -12,23 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import com.example.demo.dao.IEmployeeRepository;
-import com.example.demo.model.EmployeeEntity;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 @Service
 public class EmployeeService {
 
-    @Autowired
-    private IEmployeeRepository employeeRepository;
-
-    @Autowired
     private IEmployeeRepository employeeRepository;
 
     /**
@@ -82,22 +67,6 @@ public class EmployeeService {
 
 	public List<EmployeeEntity> getAllEmployeesAgeLTy(int y) throws Exception {
 
-    /**
-     * Get Employee with Highest Salary
-     *
-     * @return List {@link EmployeeEntity}
-     * @throws IOException
-     * @throws ParseException
-     */
-    public List<EmployeeEntity> getEmployeeWithSalary(boolean isMax) throws IOException, ParseException {
-        List<EmployeeEntity> allEmployees = employeeRepository.getAllEmployees();
-        if (!CollectionUtils.isEmpty(allEmployees)) {
-            IntStream salaryStream = allEmployees.stream().mapToInt(EmployeeEntity::getEmployeeSalary);
-            int maxOrMinSalary = isMax ? salaryStream.max().orElse(-1) : salaryStream.min().orElse(-1);
-            allEmployees = allEmployees.stream().filter(val -> val.getEmployeeSalary() == maxOrMinSalary).collect(Collectors.toList());
-        }
-        return allEmployees;
-    }
 		return getAllEmployees().stream().filter(e -> e.getEmployeeAge() < y).collect(Collectors.toList());
 	}
 

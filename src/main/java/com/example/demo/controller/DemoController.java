@@ -50,23 +50,8 @@ public class DemoController {
         return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping("/employees/salary/{salary}")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesWhereSalaryGreater(@PathVariable Integer salary) throws IOException, ParseException {
-        List<EmployeeEntity> list = service.getAllEmployeesWhereSalaryGreater(salary);
-        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
-    }
 
-    @GetMapping("/employees/salary/max")
-    public ResponseEntity<List<EmployeeEntity>> getEmployeeWithHighestSalary() throws IOException, ParseException {
-        List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(true);
-        return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
-    }
 
-    @GetMapping("/employees/salary/min")
-    public ResponseEntity<List<EmployeeEntity>> getEmployeeWithLowestSalary() throws IOException, ParseException {
-        List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(false);
-        return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
-    }
 
 	@GetMapping("/employees/salary/gt/{x}")
 	public ResponseEntity<List<EmployeeEntity>> getAllEmployeesSalGTx(@PathVariable int x) throws Exception {
