@@ -1,57 +1,89 @@
 package com.example.demo.service;
 
-import com.example.demo.model.EmployeeEntity;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import com.example.demo.dao.IEmployeeRepository;
+import com.example.demo.model.EmployeeEntity;
 
 @Service
 public class EmployeeService {
+	
+    @Autowired
+    private IEmployeeRepository employeeRepository;
 
+    /**
+     * Get All Employee
+     *
+     * @return List of {@link EmployeeEntity}
+     * @throws IOException IO Exception
+     * @throws ParseException
+     */
     public List<EmployeeEntity> getAllEmployees() throws IOException, ParseException {
-
-        URL url = new URL("http://dummy.restapiexample.com/api/v1/employees");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-
-        in.close();
-        con.disconnect();
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-
-        Object obj = new JSONParser().parse(content.toString());
-        JSONObject jo = (JSONObject) obj;
-
-        String status = (String) jo.get("status");
-        JSONArray data = (JSONArray) jo.get("data");
-
-        System.out.println("status ==> "+status);
-        System.out.println("data ==> "+data);
-
-        List<EmployeeEntity> empList = Arrays.asList(mapper.readValue(data.toJSONString(),EmployeeEntity[].class));
-
-        return empList;
+        return employeeRepository.getAllEmployees();
     }
+
+    /**
+     * Get All Employee where Salary is Greater than Provided value
+     *
+     * @param salary
+     * @return List {@link EmployeeEntity}
+     * @throws IOException
+     * @throws ParseException
+     */
+    public List<EmployeeEntity> getAllEmployeesWhereSalaryGreater(Integer salary) throws IOException, ParseException {
+        List<EmployeeEntity> allEmployees = employeeRepository.getAllEmployees();
+        System.out.println(allEmployees);
+        if (!CollectionUtils.isEmpty(allEmployees)) {
+            allEmployees = allEmployees.stream().filter(val -> val.getEmployeeSalary() > salary).collect(Collectors.toList());
+        }
+        return allEmployees;
+    }
+
+
+    /**
+     * Get Employee with Highest Salary
+     *
+     * @return List {@link EmployeeEntity}
+     * @throws IOException
+     * @throws ParseException
+     */
+    public List<EmployeeEntity> getEmployeeWithSalary(boolean isMax) throws IOException, ParseException {
+        List<EmployeeEntity> allEmployees = employeeRepository.getAllEmployees();
+        if (!CollectionUtils.isEmpty(allEmployees)) {
+            IntStream salaryStream = allEmployees.stream().mapToInt(EmployeeEntity::getEmployeeSalary);
+            int maxOrMinSalary = isMax ? salaryStream.max().orElse(-1) : salaryStream.min().orElse(-1);
+            allEmployees = allEmployees.stream().filter(val -> val.getEmployeeSalary() == maxOrMinSalary).collect(Collectors.toList());
+        }
+        return allEmployees;
+	}
+
+	public List<EmployeeEntity> getAllEmployeesSalGTx(int x) throws Exception {
+
+		return getAllEmployees().stream().filter(e -> e.getEmployeeSalary() > x).collect(Collectors.toList());
+	}
+
+	public List<EmployeeEntity> getAllEmployeesAgeLTy(int y) throws Exception {
+
+		return getAllEmployees().stream().filter(e -> e.getEmployeeAge() < y).collect(Collectors.toList());
+	}
+
+	public EmployeeEntity getEmployeesById(int z) throws Exception {
+
+		return (EmployeeEntity) getAllEmployees().stream().filter(e -> e.getId() == z).collect(Collectors.toList());
+	}
+
+	public EmployeeEntity getEmployeeHS() throws Exception {
+
+		return getAllEmployees().stream().sorted((e1, e2) -> e2.getEmployeeSalary() - e1.getEmployeeSalary())
+				.findFirst().get();
+
+	}
 }
