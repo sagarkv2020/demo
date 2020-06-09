@@ -6,15 +6,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeEntity {
 
-	private int id;
-	@JsonProperty("employee_name")
-	private String employeeName;
-	@JsonProperty("employee_salary")
-	private int employeeSalary;
-	@JsonProperty("employee_age")
-	private int employeeAge;
-	@JsonProperty("profile_image")
-	private String profileImage;
+    private int id;
+    @JsonProperty("employee_name")
+    private String employeeName;
+    @JsonProperty("employee_salary")
+    private int employeeSalary;
+    @JsonProperty("employee_age")
+    private int employeeAge;
+    @JsonProperty("profile_image")
+    private String profileImage;
+
+    public EmployeeEntity() {
+    }
+
+    public EmployeeEntity(int id, String employeeName, int employeeSalary, int employeeAge, String profileImage) {
+        this.id = id;
+        this.employeeName = employeeName;
+        this.employeeSalary = employeeSalary;
+        this.employeeAge = employeeAge;
+        this.profileImage = profileImage;
+    }
 
 	public int getId() {
 		return id;
