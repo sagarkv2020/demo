@@ -1,16 +1,14 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.EmployeeEntity;
+import com.example.demo.domain.request.EmployeeRequestVO;
+import com.example.demo.domain.response.EmployeeResponseVO;
+import com.example.demo.service.AbstractResponse;
 import com.example.demo.service.EmployeeService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +21,7 @@ Employee whose id =Z
 Employee with the highest salary
  */
 @RestController
-public class DemoController {
+public class DemoController extends AbstractResponse {
 
     @Autowired
     private EmployeeService service;
@@ -34,27 +32,45 @@ public class DemoController {
     }
 
     @GetMapping("/employees")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployees() throws IOException, ParseException {
-        List<EmployeeEntity> list = service.getAllEmployees();
-        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployees() throws IOException, ParseException {
+        List<EmployeeResponseVO> list = service.getAllEmployees();
+        return successResponse(list);
     }
 
     @GetMapping("/employees/salary/{salary}")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesWhereSalaryGreater(@PathVariable Integer salary) throws IOException, ParseException {
-        List<EmployeeEntity> list = service.getAllEmployeesWhereSalaryGreater(salary);
-        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesWhereSalaryGreater(@PathVariable Integer salary) throws IOException, ParseException {
+        List<EmployeeResponseVO> list = service.getAllEmployeesWhereSalaryGreater(salary);
+        return successResponse(list);
     }
 
     @GetMapping("/employees/salary/max")
-    public ResponseEntity<List<EmployeeEntity>> getEmployeeWithHighestSalary() throws IOException, ParseException {
-        List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(true);
-        return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<EmployeeResponseVO> getEmployeeWithHighestSalary() {
+        EmployeeResponseVO responseVO = service.getEmployeeWithSalary(true);
+        return successResponse(responseVO);
     }
 
     @GetMapping("/employees/salary/min")
-    public ResponseEntity<List<EmployeeEntity>> getEmployeeWithLowestSalary() throws IOException, ParseException {
-        List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(false);
-        return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<EmployeeResponseVO> getEmployeeWithLowestSalary() {
+        EmployeeResponseVO responseVO = service.getEmployeeWithSalary(false);
+        return successResponse(responseVO);
+    }
+
+    @PostMapping(value = "/employees/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createEmployee(@RequestBody EmployeeRequestVO requestVO) {
+        service.createEmployee(requestVO);
+        return successResponse(String.format("Successfully Created %s as Employee", requestVO.getEmployeeName()));
+    }
+
+    @PutMapping(value = "/employees/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateEmployee(@RequestBody EmployeeRequestVO requestVO, @PathVariable Integer id) {
+        service.updateEmployee(requestVO, id);
+        return successResponse(String.format("Successfully updated %s ", requestVO.getEmployeeName()));
+    }
+
+    @DeleteMapping(value = "/employees/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteEmployee(@PathVariable Integer id) {
+        service.deleteEmployee(id);
+        return successResponse(String.format("Successfully deleted %s ", id));
     }
 
 }

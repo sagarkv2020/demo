@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.EmployeeEntity;
+import com.example.demo.domain.request.EmployeeRequestVO;
+import com.example.demo.domain.response.EmployeeResponseVO;
 import com.example.demo.provider.MockDataProvider;
 import com.example.demo.service.EmployeeService;
 import org.json.simple.parser.ParseException;
@@ -10,14 +11,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,15 +49,13 @@ public class DemoControllerTest {
         // Setup
 
         // Configure EmployeeService.getAllEmployees(...).
-        final EmployeeEntity employeeEntity = MockDataProvider.getMockEmployee();
-        final List<EmployeeEntity> employeeEntityList = Collections.singletonList(employeeEntity);
-        when(mockService.getAllEmployees()).thenReturn(employeeEntityList);
+        when(mockService.getAllEmployees()).thenReturn(MockDataProvider.getListOfMockEmployeeResponseVO());
 
         // Run the test
-        final ResponseEntity<List<EmployeeEntity>> result = demoControllerUnderTest.getAllEmployees();
+        final ResponseEntity<List<EmployeeResponseVO>> result = demoControllerUnderTest.getAllEmployees();
 
         // Verify the results
-        assertEquals(result.getBody().size(), 1);
+        assertEquals(result.getBody().size(), 3);
     }
 
     @Test(expected = IOException.class)
@@ -81,11 +81,11 @@ public class DemoControllerTest {
         // Setup
 
         // Configure EmployeeService.getAllEmployeesWhereSalaryGreater(...).
-        final List<EmployeeEntity> employeeEntityList = MockDataProvider.getListOfMockEmployee();
+        final List<EmployeeResponseVO> employeeEntityList = MockDataProvider.getListOfMockEmployeeResponseVO();
         when(mockService.getAllEmployeesWhereSalaryGreater(0)).thenReturn(employeeEntityList);
 
         // Run the test
-        final ResponseEntity<List<EmployeeEntity>> result = demoControllerUnderTest.getAllEmployeesWhereSalaryGreater(0);
+        final ResponseEntity<List<EmployeeResponseVO>> result = demoControllerUnderTest.getAllEmployeesWhereSalaryGreater(0);
 
         // Verify the results
         assertEquals(result.getBody().size(), 3);
@@ -110,70 +110,47 @@ public class DemoControllerTest {
     }
 
     @Test
-    public void testGetEmployeeWithHighestSalary() throws Exception {
+    public void testGetEmployeeWithHighestSalary() {
         // Setup
 
         // Configure EmployeeService.getEmployeeWithHighestSalary(...).
-        final List<EmployeeEntity> employeeEntityList = MockDataProvider.getListOfMockEmployee();;
-        when(mockService.getEmployeeWithSalary(true)).thenReturn(employeeEntityList);
+        final EmployeeResponseVO mockEmployeeResponseVO = MockDataProvider.getMockEmployeeResponseVO();
+        when(mockService.getEmployeeWithSalary(true)).thenReturn(mockEmployeeResponseVO);
 
         // Run the test
-        final ResponseEntity<List<EmployeeEntity>> result = demoControllerUnderTest.getEmployeeWithHighestSalary();
+        final ResponseEntity<EmployeeResponseVO> result = demoControllerUnderTest.getEmployeeWithHighestSalary();
 
         // Verify the results
-        assertEquals(result.getBody().size(), 3);
-    }
-
-    @Test(expected = IOException.class)
-    public void testGetEmployeeWithHighestSalary_EmployeeServiceThrowsIOException() throws Exception {
-        // Setup
-        when(mockService.getEmployeeWithSalary(true)).thenThrow(IOException.class);
-
-        // Run the test
-        demoControllerUnderTest.getEmployeeWithHighestSalary();
-    }
-
-    @Test(expected = ParseException.class)
-    public void testGetEmployeeWithHighestSalary_EmployeeServiceThrowsParseException() throws Exception {
-        // Setup
-        when(mockService.getEmployeeWithSalary(true)).thenThrow(ParseException.class);
-
-        // Run the test
-        demoControllerUnderTest.getEmployeeWithHighestSalary();
+        assertEquals(result.getBody(), mockEmployeeResponseVO);
     }
 
     @Test
-    public void testGetEmployeeWithLowestSalary() throws Exception {
+    public void testGetEmployeeWithLowestSalary() {
         // Setup
 
         // Configure EmployeeService.getEmployeeWithHighestSalary(...).
-        final EmployeeEntity employeeEntity = MockDataProvider.getMockEmployee();
-        final List<EmployeeEntity> employeeEntityList = Arrays.asList(employeeEntity);
-        when(mockService.getEmployeeWithSalary(false)).thenReturn(employeeEntityList);
+        final EmployeeResponseVO mockEmployeeResponseVO = MockDataProvider.getMockEmployeeResponseVO();
+        when(mockService.getEmployeeWithSalary(true)).thenReturn(mockEmployeeResponseVO);
 
         // Run the test
-        final ResponseEntity<List<EmployeeEntity>> result = demoControllerUnderTest.getEmployeeWithLowestSalary();
+        final ResponseEntity<EmployeeResponseVO> result = demoControllerUnderTest.getEmployeeWithHighestSalary();
 
         // Verify the results
-        assertEquals(result.getBody().size(), 1);
+        assertEquals(result.getBody(), mockEmployeeResponseVO);
     }
 
-    @Test(expected = IOException.class)
-    public void testGetEmployeeWithLowestSalary_EmployeeServiceThrowsIOException() throws Exception {
+
+    @Test
+    public void testCreateEmployee() {
         // Setup
-        when(mockService.getEmployeeWithSalary(false)).thenThrow(IOException.class);
+        final EmployeeRequestVO requestVO = new EmployeeRequestVO("employeeName", 0, 0, "profileImage");
+        final ResponseEntity<String> expectedResult = new ResponseEntity<>("Successfully Created employeeName as Employee", HttpStatus.OK);
 
         // Run the test
-        demoControllerUnderTest.getEmployeeWithLowestSalary();
+        final ResponseEntity<String> result = demoControllerUnderTest.createEmployee(requestVO);
+
+        // Verify the results
+        assertEquals(expectedResult, result);
+        verify(mockService).createEmployee(any(EmployeeRequestVO.class));
     }
-
-    @Test(expected = ParseException.class)
-    public void testGetEmployeeWithLowestSalary_EmployeeServiceThrowsParseException() throws Exception {
-        // Setup
-        when(mockService.getEmployeeWithSalary(false)).thenThrow(ParseException.class);
-
-        // Run the test
-        demoControllerUnderTest.getEmployeeWithLowestSalary();
-    }
-
 }

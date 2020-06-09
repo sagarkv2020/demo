@@ -1,28 +1,21 @@
-package com.example.demo.model;
+package com.example.demo.domain.request;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
-@Table(name = "employee")
-@AttributeOverride(name = "id", column = @Column(name = "ID"))
-public class EmployeeEntity extends BaseEntity {
-
-    @Column(name = "name")
+public class EmployeeRequestVO {
+    @JsonProperty("employee_name")
     private String employeeName;
-    @Column(name = "salary")
+    @JsonProperty("employee_salary")
     private int employeeSalary;
-    @Column(name = "age")
+    @JsonProperty("employee_age")
     private int employeeAge;
-    @Column(name = "profile_image")
+    @JsonProperty("profile_image")
     private String profileImage;
 
-    public EmployeeEntity() {
+    public EmployeeRequestVO() {
     }
 
-    public EmployeeEntity(String employeeName, int employeeSalary, int employeeAge, String profileImage) {
+    public EmployeeRequestVO(String employeeName, int employeeSalary, int employeeAge, String profileImage) {
         this.employeeName = employeeName;
         this.employeeSalary = employeeSalary;
         this.employeeAge = employeeAge;
