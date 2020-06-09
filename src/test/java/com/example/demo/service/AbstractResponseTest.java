@@ -26,7 +26,7 @@ public class AbstractResponseTest {
         final String message = "Success";
         final ResponseEntity<String> expected = new ResponseEntity<>(message, HttpStatus.OK);
         // Run the test
-        final ResponseEntity<String> result = AbstractResponse.successResponse(message);
+        final ResponseEntity<String> result = abstractResponseUnderTest.successResponse(message);
 
         // Verify the results
         assertEquals(result, expected);
@@ -38,7 +38,7 @@ public class AbstractResponseTest {
         final String message = "ERROR";
         final ResponseEntity<String> expected = new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
         // Run the test
-        final ResponseEntity<String> result = AbstractResponse.errorResponse(message);
+        final ResponseEntity<String> result = abstractResponseUnderTest.errorResponse(message);
 
         // Verify the results
         assertEquals(result, expected);
