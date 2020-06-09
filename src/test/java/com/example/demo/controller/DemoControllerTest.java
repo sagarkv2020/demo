@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.EmployeeEntity;
+import com.example.demo.model.entity.EmployeeEntity;
 import com.example.demo.provider.MockDataProvider;
 import com.example.demo.service.EmployeeService;
 import org.json.simple.parser.ParseException;

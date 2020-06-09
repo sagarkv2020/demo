@@ -1,6 +1,6 @@
 package com.example.demo.provider;
 
-import com.example.demo.model.EmployeeEntity;
+import com.example.demo.model.entity.EmployeeEntity;
 
 import java.util.Arrays;
 import java.util.List;

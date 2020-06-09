@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.model.EmployeeEntity;
+import com.example.demo.model.entity.EmployeeEntity;
 import com.example.demo.model.Hello;
 import com.example.demo.service.EmployeeService;
 
