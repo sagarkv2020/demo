@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.request.EmployeeRequestVO;
 import com.example.demo.domain.response.EmployeeResponseVO;
 import com.example.demo.provider.MockDataProvider;
+import com.example.demo.service.AbstractResponse;
 import com.example.demo.service.EmployeeService;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
@@ -15,12 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DemoControllerTest {
@@ -152,5 +153,46 @@ public class DemoControllerTest {
         // Verify the results
         assertEquals(expectedResult, result);
         verify(mockService).createEmployee(any(EmployeeRequestVO.class));
+    }
+
+    @Test
+    public void testDeleteEmployee() {
+        // Setup
+        final ResponseEntity<String> expectedResult = new ResponseEntity<>("Successfully deleted 0 ", HttpStatus.OK);
+
+        // Run the test
+        final ResponseEntity<String> result = demoControllerUnderTest.deleteEmployee(0);
+
+        // Verify the results
+        assertEquals(expectedResult, result);
+        verify(mockService).deleteEmployee(0);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testDeleteEmployee_EmployeeServiceThrowsRuntimeException() {
+        // Setup
+        final ResponseEntity<String> expectedResult = new ResponseEntity<>("body", HttpStatus.OK);
+        doThrow(RuntimeException.class).when(mockService).deleteEmployee(0);
+
+        // Run the test
+        final ResponseEntity<String> result = demoControllerUnderTest.deleteEmployee(0);
+
+        // Verify the results
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testGetAllEmployeesAsNull() throws Exception {
+        // Setup
+
+        // Configure EmployeeService.getAllEmployees(...).
+        final List<EmployeeResponseVO> employeeResponseVOS = new ArrayList<>();
+        when(mockService.getAllEmployees()).thenReturn(employeeResponseVOS);
+        final ResponseEntity<List<EmployeeResponseVO>> expected = AbstractResponse.successResponse(new ArrayList<>());
+        // Run the test
+        final ResponseEntity<List<EmployeeResponseVO>> result = demoControllerUnderTest.getAllEmployees();
+
+        // Verify the results
+        assertEquals(result,  expected);
     }
 }

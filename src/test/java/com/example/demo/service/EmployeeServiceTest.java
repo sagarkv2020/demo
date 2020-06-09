@@ -107,4 +107,17 @@ public class EmployeeServiceTest {
 
         // Verify the results
     }
+
+    @Test
+    public void testGetAllEmployeesNull() throws Exception {
+        // Configure EmployeeService.getAllEmployees(...).
+        final List<EmployeeEntity> employeeEntityList = new ArrayList<>();
+        when(employeeRepository.findAll()).thenReturn(employeeEntityList);
+
+        // Run the test
+        final List<EmployeeResponseVO> result = employeeServiceUnderTest.getAllEmployees();
+
+        // Verify the results
+        assertEquals(result, new ArrayList<>());
+    }
 }
