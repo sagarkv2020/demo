@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dao.IEmployeeRepository;
 import com.example.demo.model.EmployeeEntity;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -14,6 +15,7 @@ import java.util.stream.IntStream;
 @Service
 public class EmployeeService {
 
+    @Autowired
     private IEmployeeRepository employeeRepository;
 
     /**
