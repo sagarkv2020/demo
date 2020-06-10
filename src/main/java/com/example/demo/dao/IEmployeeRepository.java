@@ -7,5 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IEmployeeRepository {
-    List<EmployeeEntity> getAllEmployees() throws IOException, ParseException;
+
+	List<EmployeeEntity> getAllEmployees() throws IOException, ParseException;
 }
+

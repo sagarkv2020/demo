@@ -45,8 +45,6 @@ public class EmployeeService {
         }
         return allEmployees;
     }
-
-
     /**
      * Get Employee with Highest Salary
      *
@@ -62,5 +60,27 @@ public class EmployeeService {
             allEmployees = allEmployees.stream().filter(val -> val.getEmployeeSalary() == maxOrMinSalary).collect(Collectors.toList());
         }
         return allEmployees;
-    }
+	}
+
+	public List<EmployeeEntity> getAllEmployeesSalGTx(int x) throws Exception {
+
+		return getAllEmployees().stream().filter(e -> e.getEmployeeSalary() > x).collect(Collectors.toList());
+	}
+
+	public List<EmployeeEntity> getAllEmployeesAgeLTy(int y) throws Exception {
+
+		return getAllEmployees().stream().filter(e -> e.getEmployeeAge() < y).collect(Collectors.toList());
+	}
+
+	public EmployeeEntity getEmployeesById(int z) throws Exception {
+
+		return (EmployeeEntity) getAllEmployees().stream().filter(e -> e.getId() == z).collect(Collectors.toList());
+	}
+
+	public EmployeeEntity getEmployeeHS() throws Exception {
+
+		return getAllEmployees().stream().sorted((e1, e2) -> e2.getEmployeeSalary() - e1.getEmployeeSalary())
+				.findFirst().get();
+
+	}
 }

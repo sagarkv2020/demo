@@ -52,3 +52,4 @@ public class EmployeeRepository implements IEmployeeRepository {
         return Arrays.asList(mapper.readValue(data.toJSONString(), EmployeeEntity[].class));
     }
 }
+
