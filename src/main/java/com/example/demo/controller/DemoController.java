@@ -38,6 +38,7 @@ public class DemoController {
     public ResponseEntity<List<EmployeeEntity>> getAllEmployees() throws Exception {
         List<EmployeeEntity> list = service.getAllEmployees();
         return new ResponseEntity<List<EmployeeEntity>>(list, new HttpHeaders(), HttpStatus.OK);
+
     }
 
 

@@ -44,6 +44,7 @@ public class DemoControllerTest {
         assertEquals("Hello World ! Greetings from Spring Boot!", result);
     }
 
+    
     @Test(expected = ResourceNotFoundException.class)
     public void testResourceNotFound() throws Exception {
         //setup
