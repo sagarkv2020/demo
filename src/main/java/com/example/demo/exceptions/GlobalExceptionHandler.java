@@ -9,16 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import com.example.demo.utils.RestResponseUtil;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	private Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-	
-	public ResponseEntity<?> handleResourceNotFoundException(HttpServletRequest request, ResourceNotFoundException exception) {
-		
-		log.info("@ResourceNotFoundException : "+ exception.getMessage());
-		
-		return RestResponseUtil.badResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
-	}
+    private Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(HttpServletRequest request, ResourceNotFoundException exception) {
+
+        log.info("@ResourceNotFoundException : " + exception.getMessage());
+
+        return RestResponseUtil.badResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
