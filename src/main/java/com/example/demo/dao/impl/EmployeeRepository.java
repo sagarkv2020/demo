@@ -1,7 +1,7 @@
 package com.example.demo.dao.impl;
 
 import com.example.demo.dao.IEmployeeRepository;
-import com.example.demo.model.entity.EmployeeEntity;
+import com.example.demo.model.EmployeeEntity;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;

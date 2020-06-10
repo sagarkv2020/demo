@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.IEmployeeRepository;
-import com.example.demo.model.entity.EmployeeEntity;
+import com.example.demo.model.EmployeeEntity;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

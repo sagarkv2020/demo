@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.entity.Users;
-import com.example.demo.model.repository.UserRepository;
+import com.example.demo.dao.UserRepository;
+import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -30,9 +32,21 @@ public class UsersController {
         return userRepository.findByName(users.getName());
     }
 
-    /*@PutMapping("/update")
+    @PutMapping("/update")
     public Users update(@RequestBody final Users users) {
-        userRepository.up
-    }*/
+        Optional<Users> usersOptional = userRepository.findById(users.getId());
+        Users user;
+        if (usersOptional.isPresent()) {
+            user = usersOptional.get();
+            // Setting Details
+            user.setName(users.getName());
+            user.setSalary(users.getSalary());
+            user.setTeamName(users.getTeamName());
+            userRepository.save(users);
+            return user;
+        } else {
+            throw new ResourceNotFoundException("Resource with id : " + users.getId() + " Not Found");
+        }
+    }
 
 }
