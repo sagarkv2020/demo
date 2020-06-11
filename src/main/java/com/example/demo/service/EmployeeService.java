@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dao.IEmployeeRepository;
 import com.example.demo.domain.request.EmployeeRequestVO;
 import com.example.demo.domain.response.EmployeeResponseVO;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.EmployeeEntity;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,13 @@ public class EmployeeService {
      *
      * @return List of {@link EmployeeEntity}
      * @throws IOException    IO Exception
-     * @throws ParseException
+     * @throws ParseException Parse Exception
      */
     public List<EmployeeResponseVO> getAllEmployees() throws IOException, ParseException {
         List<EmployeeEntity> employeeEntityList = employeeRepository.findAll();
         List<EmployeeResponseVO> employeeResponseVOList = new ArrayList<>(0);
         if (!CollectionUtils.isEmpty(employeeEntityList)) {
-            employeeResponseVOList = employeeEntityList.stream().map(employee -> new EmployeeResponseVO.EmployeeBuilder().id(employee.getId())
-                    .employeeAge(employee.getEmployeeAge())
-                    .employeeName(employee.getEmployeeName())
-                    .employeeSalary(employee.getEmployeeSalary())
-                    .profileImage(employee.getProfileImage()).build())
+            employeeResponseVOList = employeeEntityList.stream().map(this::mapEmployeeEntityToResponse)
                     .collect(Collectors.toList());
         }
         return employeeResponseVOList;
@@ -55,15 +52,11 @@ public class EmployeeService {
         List<EmployeeResponseVO> employeeResponseVOS = new ArrayList<>(0);
         System.out.println(allEmployees);
         if (!CollectionUtils.isEmpty(allEmployees)) {
-            employeeResponseVOS = allEmployees.stream().map(employee -> new EmployeeResponseVO.EmployeeBuilder()
-                    .id(employee.getId())
-                    .employeeAge(employee.getEmployeeAge())
-                    .employeeName(employee.getEmployeeName())
-                    .employeeSalary(employee.getEmployeeSalary())
-                    .profileImage(employee.getProfileImage()).build()).collect(Collectors.toList());
+            employeeResponseVOS = allEmployees.stream().map(this::mapEmployeeEntityToResponse).collect(Collectors.toList());
         }
         return employeeResponseVOS;
     }
+
     /**
      * Get Employee with Highest Salary
      *
@@ -78,11 +71,7 @@ public class EmployeeService {
             employee = employeeRepository.findFirstByOrderByEmployeeSalaryAsc();
         }
         if (employee.isPresent()) {
-            responseVO = new EmployeeResponseVO.EmployeeBuilder().id(employee.get().getId())
-                    .employeeAge(employee.get().getEmployeeAge())
-                    .employeeName(employee.get().getEmployeeName())
-                    .employeeSalary(employee.get().getEmployeeSalary())
-                    .profileImage(employee.get().getProfileImage()).build();
+            responseVO = mapEmployeeEntityToResponse(employee.get());
         }
         return responseVO;
     }
@@ -105,7 +94,7 @@ public class EmployeeService {
      * @param requestVO {@link EmployeeRequestVO}
      * @param id        ID of the Employee
      */
-    public void updateEmployee(EmployeeRequestVO requestVO, Integer id) throws RuntimeException {
+    public void updateEmployee(EmployeeRequestVO requestVO, Integer id) throws ResourceNotFoundException {
         Optional<EmployeeEntity> entityOptional = employeeRepository.findById(id);
         if (entityOptional.isPresent()) {
             EmployeeEntity employeeEntity = entityOptional.get();
@@ -124,7 +113,7 @@ public class EmployeeService {
             employeeEntity.setModifiedBy(employeeEntity.getEmployeeName());
             employeeRepository.save(employeeEntity);
         } else {
-            throw new RuntimeException("No Employee Found");
+            throw new ResourceNotFoundException("No Employee Found");
         }
     }
 
@@ -133,34 +122,59 @@ public class EmployeeService {
      *
      * @param id Employee ID
      */
-    public void deleteEmployee(Integer id) throws RuntimeException {
+    public void deleteEmployee(Integer id) throws ResourceNotFoundException {
         Optional<EmployeeEntity> entityOptional = employeeRepository.findById(id);
         if (entityOptional.isPresent()) {
             employeeRepository.delete(entityOptional.get());
         } else {
-            throw new RuntimeException("No Employee Found");
+            throw new ResourceNotFoundException("No Employee Found");
         }
-	}
+    }
 
-	public List<EmployeeEntity> getAllEmployeesSalGTx(int x) throws Exception {
+    public List<EmployeeResponseVO> getAllEmployeesSalGTx(int x) throws Exception {
+        List<EmployeeEntity> employeeEntityList = employeeRepository.findAll();
+        List<EmployeeResponseVO> employeeResponseVOList = new ArrayList<>(0);
+        if (!CollectionUtils.isEmpty(employeeEntityList)) {
+            employeeResponseVOList = employeeEntityList.stream().filter(e -> e.getEmployeeSalary() > x)
+                    .map(this::mapEmployeeEntityToResponse)
+                    .collect(Collectors.toList());
+        }
+        return employeeResponseVOList;
+    }
 
-		return getAllEmployees().stream().filter(e -> e.getEmployeeSalary() > x).collect(Collectors.toList());
-	}
+    /**
+     * Map Employee Entity to Employee Response VO
+     *
+     * @param employee {@link EmployeeEntity}
+     * @return response {@link EmployeeRequestVO}
+     */
+    private EmployeeResponseVO mapEmployeeEntityToResponse(EmployeeEntity employee) {
+        return new EmployeeResponseVO.EmployeeBuilder().id(employee.getId())
+                .employeeAge(employee.getEmployeeAge())
+                .employeeName(employee.getEmployeeName())
+                .employeeSalary(employee.getEmployeeSalary())
+                .profileImage(employee.getProfileImage()).build();
+    }
 
-	public List<EmployeeEntity> getAllEmployeesAgeLTy(int y) throws Exception {
+    public List<EmployeeResponseVO> getAllEmployeesAgeLTy(int y) throws Exception {
+        List<EmployeeEntity> employeeEntityList = employeeRepository.findAll();
+        List<EmployeeResponseVO> employeeResponseVOList = new ArrayList<>(0);
+        if (!CollectionUtils.isEmpty(employeeEntityList)) {
+            employeeResponseVOList = employeeEntityList.stream().filter(e -> e.getEmployeeSalary() < y)
+                    .map(this::mapEmployeeEntityToResponse)
+                    .collect(Collectors.toList());
+        }
+        return employeeResponseVOList;
+    }
 
-		return getAllEmployees().stream().filter(e -> e.getEmployeeAge() < y).collect(Collectors.toList());
-	}
+    public EmployeeResponseVO getEmployeesById(int id) throws ResourceNotFoundException {
 
-	public EmployeeEntity getEmployeesById(int z) throws Exception {
+        Optional<EmployeeEntity> entityOptional = employeeRepository.findById(id);
+        if (entityOptional.isPresent()) {
+            return mapEmployeeEntityToResponse(entityOptional.get());
+        } else {
+            throw new ResourceNotFoundException("No Employee Found");
+        }
+    }
 
-		return (EmployeeEntity) getAllEmployees().stream().filter(e -> e.getId() == z).collect(Collectors.toList());
-	}
-
-	public EmployeeEntity getEmployeeHS() throws Exception {
-
-		return getAllEmployees().stream().sorted((e1, e2) -> e2.getEmployeeSalary() - e1.getEmployeeSalary())
-				.findFirst().get();
-
-	}
 }

@@ -1,14 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.domain.request.EmployeeRequestVO;
 import com.example.demo.domain.response.EmployeeResponseVO;
-import com.example.demo.service.AbstractResponse;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.Hello;
+import com.example.demo.service.AbstractResponse;
 import com.example.demo.service.EmployeeService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,38 +41,36 @@ public class DemoController extends AbstractResponse {
 
 
     @GetMapping("/employees/salary/gt/{x}")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesSalGTx(@PathVariable int x) throws Exception {
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesSalGTx(@PathVariable int x) throws Exception {
 
-        return new ResponseEntity<List<EmployeeEntity>>(service.getAllEmployeesSalGTx(x), new HttpHeaders(),
+        return new ResponseEntity<>(service.getAllEmployeesSalGTx(x), new HttpHeaders(),
                 HttpStatus.OK);
 
     }
 
     @GetMapping("/employees/age/lt/{y}")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesAgeLTy(@PathVariable int y) throws Exception {
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesAgeLTy(@PathVariable int y) throws Exception {
 
-        return new ResponseEntity<List<EmployeeEntity>>(service.getAllEmployeesAgeLTy(y), new HttpHeaders(),
+        return new ResponseEntity<>(service.getAllEmployeesAgeLTy(y), new HttpHeaders(),
                 HttpStatus.OK);
 
     }
 
     @GetMapping("/employees/{z}")
-    public ResponseEntity<EmployeeEntity> getEmployeesZ(@PathVariable int z) throws Exception {
+    public ResponseEntity<EmployeeResponseVO> getEmployeesZ(@PathVariable int z) throws Exception {
 
-        EmployeeEntity emp = service.getEmployeesById(z);
+        EmployeeResponseVO emp = service.getEmployeesById(z);
 
         if (emp == null || emp.getId() <= 0)
             throw new ResourceNotFoundException("Employee with id: " + z + " does not Exist!!");
         else
-            return new ResponseEntity<EmployeeEntity>(emp, new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(emp, new HttpHeaders(), HttpStatus.OK);
 
     }
 
     @GetMapping(value = "/employees/HS", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeEntity getEmployeesHS() throws Exception {
-
-        return service.getEmployeeHS();
-
+    public EmployeeResponseVO getEmployeesHS() throws Exception {
+        return service.getEmployeeWithSalary(true);
     }
 
     @GetMapping("/employees/salary/{salary}")
