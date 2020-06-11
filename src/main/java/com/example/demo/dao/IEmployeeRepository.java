@@ -14,5 +14,7 @@ public interface IEmployeeRepository extends JpaRepository<EmployeeEntity, Integ
 
     Optional<EmployeeEntity> findFirstByOrderByEmployeeSalaryDesc();
 
-    List<EmployeeEntity> findByEmployeeSalaryGreaterThan(int salary);
+
+	List<EmployeeEntity> findByEmployeeSalaryGreaterThan(int salary);
 }
+

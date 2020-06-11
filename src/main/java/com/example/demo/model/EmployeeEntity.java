@@ -29,35 +29,35 @@ public class EmployeeEntity extends BaseEntity {
         this.profileImage = profileImage;
     }
 
-    public String getEmployeeName() {
+	public String getEmployeeName() {
         return employeeName;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
 
-    public int getEmployeeSalary() {
-        return employeeSalary;
-    }
+	public int getEmployeeSalary() {
+		return employeeSalary;
+	}
 
-    public void setEmployeeSalary(int employeeSalary) {
-        this.employeeSalary = employeeSalary;
-    }
+	public void setEmployeeSalary(int employeeSalary) {
+		this.employeeSalary = employeeSalary;
+	}
 
-    public int getEmployeeAge() {
-        return employeeAge;
-    }
+	public int getEmployeeAge() {
+		return employeeAge;
+	}
 
-    public void setEmployeeAge(int employeeAge) {
-        this.employeeAge = employeeAge;
-    }
+	public void setEmployeeAge(int employeeAge) {
+		this.employeeAge = employeeAge;
+	}
 
-    public String getProfileImage() {
-        return profileImage;
-    }
+	public String getProfileImage() {
+		return profileImage;
+	}
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
+	}
 }

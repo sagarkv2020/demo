@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.domain.request.EmployeeRequestVO;
 import com.example.demo.domain.response.EmployeeResponseVO;
 import com.example.demo.provider.MockDataProvider;
@@ -22,6 +23,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DemoControllerTest {
@@ -44,6 +47,16 @@ public class DemoControllerTest {
         // Verify the results
         assertEquals("Hello World ! Greetings from Spring Boot!", result);
     }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testResourceNotFound() throws Exception {
+        //setup
+        when(mockService.getEmployeesById(anyInt())).thenThrow(ResourceNotFoundException.class);
+        // Run test
+        demoControllerUnderTest.getEmployeesZ(0);
+
+    }
+
 
     @Test
     public void testGetAllEmployees() throws Exception {
@@ -196,3 +209,4 @@ public class DemoControllerTest {
         assertEquals(result,  expected);
     }
 }
+
