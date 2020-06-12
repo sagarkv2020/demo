@@ -1,100 +1,117 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.request.EmployeeRequestVO;
+import com.example.demo.domain.response.EmployeeResponseVO;
 import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.model.EmployeeEntity;
 import com.example.demo.model.Hello;
+import com.example.demo.service.AbstractResponse;
 import com.example.demo.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
 @RestController
-public class DemoController {
+@Api(value="employeeCtrl", description="Employee API endpoints")
+public class DemoController extends AbstractResponse {
 
     @Autowired
     private EmployeeService service;
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String index() {
         return "Hello World ! Greetings from Spring Boot!";
     }
 
     @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Hello json() {
-		return new Hello("123", "Raj");
-	}
+    public Hello json() {
+        return new Hello("123", "Raj");
+    }
 
-	@GetMapping("/employees")
-    public ResponseEntity<List<EmployeeEntity>> getAllEmployees() throws Exception {
-        List<EmployeeEntity> list = service.getAllEmployees();
-        return new ResponseEntity<List<EmployeeEntity>>(list, new HttpHeaders(), HttpStatus.OK);
+    @GetMapping("/employees")
+    @ApiOperation("Returns list of all Employees in the system.")
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployees() throws IOException, ParseException {
+        List<EmployeeResponseVO> list = service.getAllEmployees();
+        return successResponse(list);
     }
 
 
+    @GetMapping("/employees/salary/gt/{x}")
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesSalGTx(@PathVariable int x) throws Exception {
 
+        return new ResponseEntity<>(service.getAllEmployeesSalGTx(x), new HttpHeaders(),
+                HttpStatus.OK);
 
-	@GetMapping("/employees/salary/gt/{x}")
-	public ResponseEntity<List<EmployeeEntity>> getAllEmployeesSalGTx(@PathVariable int x) throws Exception {
+    }
 
-		return new ResponseEntity<List<EmployeeEntity>>(service.getAllEmployeesSalGTx(x), new HttpHeaders(),
-				HttpStatus.OK);
+    @GetMapping("/employees/age/lt/{y}")
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesAgeLTy(@PathVariable int y) throws Exception {
 
-	}
+        return new ResponseEntity<>(service.getAllEmployeesAgeLTy(y), new HttpHeaders(),
+                HttpStatus.OK);
 
-	@GetMapping("/employees/age/lt/{y}")
-	public ResponseEntity<List<EmployeeEntity>> getAllEmployeesAgeLTy(@PathVariable int y) throws Exception {
+    }
 
-		return new ResponseEntity<List<EmployeeEntity>>(service.getAllEmployeesAgeLTy(y), new HttpHeaders(),
-				HttpStatus.OK);
+    @GetMapping("/employees/{z}")
+    public ResponseEntity<EmployeeResponseVO> getEmployeesZ(@PathVariable int z) throws Exception {
 
-	}
+        EmployeeResponseVO emp = service.getEmployeesById(z);
 
-	@GetMapping("/employees/{z}")
-	public ResponseEntity<EmployeeEntity> getEmployeesZ(@PathVariable int z) throws Exception {
+        if (emp == null || emp.getId() <= 0)
+            throw new ResourceNotFoundException("Employee with id: " + z + " does not Exist!!");
+        else
+            return new ResponseEntity<>(emp, new HttpHeaders(), HttpStatus.OK);
 
-		EmployeeEntity emp = service.getEmployeesById(z);
+    }
 
-		if (emp == null || emp.getId() <= 0)
-			throw new ResourceNotFoundException("Employee with id: " + z + " does not Exist!!");
-		else
-			return new ResponseEntity<EmployeeEntity>(emp, new HttpHeaders(), HttpStatus.OK);
+    @GetMapping(value = "/employees/HS", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeResponseVO getEmployeesHS() throws Exception {
+        return service.getEmployeeWithSalary(true);
+    }
 
-	}
+    @GetMapping("/employees/salary/{salary}")
+    public ResponseEntity<List<EmployeeResponseVO>> getAllEmployeesWhereSalaryGreater(@PathVariable Integer salary)
+            throws IOException, ParseException {
+        List<EmployeeResponseVO> list = service.getAllEmployeesWhereSalaryGreater(salary);
+        return successResponse(list);
+    }
 
-	@GetMapping(value = "/employees/HS", produces = MediaType.APPLICATION_JSON_VALUE)
-	public EmployeeEntity getEmployeesHS() throws Exception {
+    @GetMapping("/employees/salary/max")
+    public ResponseEntity<EmployeeResponseVO> getEmployeeWithHighestSalary() {
+        EmployeeResponseVO responseVO = service.getEmployeeWithSalary(true);
+        return successResponse(responseVO);
+    }
 
-		return service.getEmployeeHS();
+    @GetMapping("/employees/salary/min")
+    public ResponseEntity<EmployeeResponseVO> getEmployeeWithLowestSalary() {
+        EmployeeResponseVO responseVO = service.getEmployeeWithSalary(false);
+        return successResponse(responseVO);
+    }
 
-	}
+    @PostMapping(value = "/employees/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createEmployee(@RequestBody EmployeeRequestVO requestVO) {
+        service.createEmployee(requestVO);
+        return successResponse(String.format("Successfully Created %s as Employee", requestVO.getEmployeeName()));
+    }
 
-	@GetMapping("/employees/salary/{salary}")
-	public ResponseEntity<List<EmployeeEntity>> getAllEmployeesWhereSalaryGreater(@PathVariable Integer salary)
-			throws IOException, ParseException {
-		List<EmployeeEntity> list = service.getAllEmployeesWhereSalaryGreater(salary);
-		return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
-	}
+    @PutMapping(value = "/employees/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateEmployee(@RequestBody EmployeeRequestVO requestVO, @PathVariable Integer id) {
+        service.updateEmployee(requestVO, id);
+        return successResponse(String.format("Successfully updated %s ", requestVO.getEmployeeName()));
+    }
 
-	@GetMapping("/employees/salary/max")
-	public ResponseEntity<List<EmployeeEntity>> getEmployeeWithHighestSalary() throws IOException, ParseException {
-		List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(true);
-		return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
-	}
-
-	@GetMapping("/employees/salary/min")
-	public ResponseEntity<List<EmployeeEntity>> getEmployeeWithLowestSalary() throws IOException, ParseException {
-		List<EmployeeEntity> employeeEntityList = service.getEmployeeWithSalary(false);
-		return new ResponseEntity<>(employeeEntityList, new HttpHeaders(), HttpStatus.OK);
-	}
+    @DeleteMapping(value = "/employees/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteEmployee(@PathVariable Integer id) {
+        service.deleteEmployee(id);
+        return successResponse(String.format("Successfully deleted %s ", id));
+    }
 
 }
