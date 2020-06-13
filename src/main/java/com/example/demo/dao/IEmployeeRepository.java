@@ -1,13 +1,20 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.EmployeeEntity;
-import org.json.simple.parser.ParseException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
-public interface IEmployeeRepository {
+@Repository
+public interface IEmployeeRepository extends JpaRepository<EmployeeEntity, Integer> {
 
-	List<EmployeeEntity> getAllEmployees() throws IOException, ParseException;
+    Optional<EmployeeEntity> findFirstByOrderByEmployeeSalaryAsc();
+
+    Optional<EmployeeEntity> findFirstByOrderByEmployeeSalaryDesc();
+
+
+	List<EmployeeEntity> findByEmployeeSalaryGreaterThan(int salary);
 }
 

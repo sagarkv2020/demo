@@ -1,43 +1,37 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class EmployeeEntity {
+@Entity
+@Table(name = "employee")
+@AttributeOverride(name = "id", column = @Column(name = "ID"))
+public class EmployeeEntity extends BaseEntity {
 
-    private int id;
-    @JsonProperty("employee_name")
+    @Column(name = "name")
     private String employeeName;
-    @JsonProperty("employee_salary")
+    @Column(name = "salary")
     private int employeeSalary;
-    @JsonProperty("employee_age")
+    @Column(name = "age")
     private int employeeAge;
-    @JsonProperty("profile_image")
+    @Column(name = "profile_image")
     private String profileImage;
 
     public EmployeeEntity() {
     }
 
-    public EmployeeEntity(int id, String employeeName, int employeeSalary, int employeeAge, String profileImage) {
-        this.id = id;
+    public EmployeeEntity(String employeeName, int employeeSalary, int employeeAge, String profileImage) {
         this.employeeName = employeeName;
         this.employeeSalary = employeeSalary;
         this.employeeAge = employeeAge;
         this.profileImage = profileImage;
     }
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getEmployeeName() {
-		return employeeName;
-	}
+        return employeeName;
+    }
 
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
