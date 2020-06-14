@@ -1,52 +1,41 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.UserRepository;
-import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.Users;
+import com.example.demo.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@Api(value = "UsersCtrl", description = "Users API endpoints")
 public class UsersController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Users> findAll() {
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     @GetMapping(value = "/{name}")
     public Users findByName(@PathVariable final String name) {
-        return userRepository.findByName(name);
+        return userService.findByName(name);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Users load(@RequestBody final Users users) {
-        userRepository.save(users);
-        return userRepository.findByName(users.getName());
+        userService.save(users);
+        return userService.findByName(users.getName());
     }
 
-    @PutMapping("/update")
+    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Users update(@RequestBody final Users users) {
-        Optional<Users> usersOptional = userRepository.findById(users.getId());
-        Users user;
-        if (usersOptional.isPresent()) {
-            user = usersOptional.get();
-            // Setting Details
-            user.setName(users.getName());
-            user.setSalary(users.getSalary());
-            user.setTeamName(users.getTeamName());
-            userRepository.save(users);
-            return user;
-        } else {
-            throw new ResourceNotFoundException("Resource with id : " + users.getId() + " Not Found");
-        }
+        return userService.updateUser(users);
     }
 
 }
