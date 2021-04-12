@@ -3,17 +3,29 @@ package com.example.demo.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel(description = "Details about Employee output object.")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeResponseVO {
 
+    @ApiModelProperty(notes = "The unique id of Employee")
     private int id;
+
+    @ApiModelProperty(notes = "Employee name")
     @JsonProperty("employee_name")
     private String employeeName;
+
+    @ApiModelProperty(notes = "Salary holdings of Employee")
     @JsonProperty("employee_salary")
     private int employeeSalary;
+
+    @ApiModelProperty(notes = "how older is an Employee")
     @JsonProperty("employee_age")
     private int employeeAge;
+
+    @ApiModelProperty(notes = "profile picture of Employee")
     @JsonProperty("profile_image")
     private String profileImage;
 

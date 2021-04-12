@@ -18,10 +18,11 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.demo.controller"))
-                .paths(PathSelectors.any())
-                .build()
+                .select() // ApiSelectorBuilder object is returned.
+                .apis(RequestHandlerSelectors.basePackage("com.example.demo")) // pkg to scan for api
+                .paths(PathSelectors.any()) // selects any paths -or- use "ant" for pattern match "/api/*"
+                //.paths(PathSelectors.ant("/api.*")) -- example.
+                .build() // return Docket object
                 .apiInfo(apiInfo());
     }
 
@@ -30,8 +31,8 @@ public class SwaggerConfig {
                 "Dummy Employee REST API",
                 "Some custom description of API.",
                 "API TOS",
-                "Terms of service",
-                new Contact("Employee Dev", "www.example.com", "myeaddress@company.com"),
-                "License of API", "API license URL", Collections.emptyList());
+                "https://www.Employeetermsandcond.com",
+                new Contact("Employee Dev", "https://www.employeeDev.com", "myeaddress@company.com"),
+                "License of API", "https://www.exampleLicense.com", Collections.emptyList());
     }
 }
