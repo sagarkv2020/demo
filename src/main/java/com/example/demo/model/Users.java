@@ -14,6 +14,16 @@ public class Users {
     private String teamName;
     private Integer salary;
 
+    public Users() {
+    }
+
+    public Users(long id, String name, String teamName, Integer salary) {
+        this.id = id;
+        this.name = name;
+        this.teamName = teamName;
+        this.salary = salary;
+    }
+
     public long getId() {
         return id;
     }

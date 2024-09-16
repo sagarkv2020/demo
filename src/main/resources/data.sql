@@ -13,7 +13,7 @@ CREATE TABLE employee (
   is_active BOOLEAN DEFAULT true
 );
 
-INSERT INTO employee (name, salary, age, created_at, created_by) VALUES
-  ('Aloke Tewary', 123456, 30, CURRENT_TIMESTAMP, 'Aloke Tewary'),
-  ('Chandra Bhushan', 3456781, 28, CURRENT_TIMESTAMP, 'Chandra Bhushan'),
-  ('Bikash Bhagat', 1234876, 26, CURRENT_TIMESTAMP, 'Bikash Bhagat');
+INSERT INTO employee (id, name, salary, age, created_at, created_by) VALUES
+  (1001, 'Amol Tewari', 123456, 30, CURRENT_TIMESTAMP, 'Amol Tewari'),
+  (1002, 'Chandra Bhushan', 3456781, 28, CURRENT_TIMESTAMP, 'Chandra Bhushan'),
+  (1003, 'Bikash Bhagat', 1234876, 26, CURRENT_TIMESTAMP, 'Bikash Bhagat');

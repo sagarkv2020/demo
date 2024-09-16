@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import antlr.debug.SemanticPredicateListener;
 import com.example.demo.domain.request.EmployeeRequestVO;
 import com.example.demo.domain.response.EmployeeResponseVO;
 import com.example.demo.exceptions.ResourceNotFoundException;
@@ -8,6 +9,7 @@ import com.example.demo.service.AbstractResponse;
 import com.example.demo.service.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@Api(value="employeeCtrl", description="Employee API endpoints")
+@Api(value = "employeeCtrl", description = "Employee API endpoints")
 public class DemoController extends AbstractResponse {
 
     @Autowired
@@ -37,7 +39,7 @@ public class DemoController extends AbstractResponse {
     }
 
     @GetMapping("/employees")
-    @ApiOperation("Returns list of all Employees in the system.")
+    @ApiOperation(value = "Returns list of all Employees in the system.", notes = "provides an api to fetch all employee details", response = EmployeeResponseVO.class)
     public ResponseEntity<List<EmployeeResponseVO>> getAllEmployees() throws IOException, ParseException {
         List<EmployeeResponseVO> list = service.getAllEmployees();
         return successResponse(list);
@@ -60,7 +62,7 @@ public class DemoController extends AbstractResponse {
 
     }
 
-    @GetMapping("/employees/{z}")
+    /*@GetMapping("/employees/{z}")
     public ResponseEntity<EmployeeResponseVO> getEmployeesZ(@PathVariable int z) throws Exception {
 
         EmployeeResponseVO emp = service.getEmployeesById(z);
@@ -70,7 +72,7 @@ public class DemoController extends AbstractResponse {
         else
             return new ResponseEntity<>(emp, new HttpHeaders(), HttpStatus.OK);
 
-    }
+    }*/
 
     @GetMapping(value = "/employees/HS", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeResponseVO getEmployeesHS() throws Exception {
@@ -108,8 +110,8 @@ public class DemoController extends AbstractResponse {
         return successResponse(String.format("Successfully updated %s ", requestVO.getEmployeeName()));
     }
 
-    @DeleteMapping(value = "/employees/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteEmployee(@PathVariable Integer id) {
+    @DeleteMapping(value = "/employees/{id}")
+    public ResponseEntity<String> deleteEmployee(@ApiParam(value = "Id value for employee you need to delete", required = true) @PathVariable Integer id) {
         service.deleteEmployee(id);
         return successResponse(String.format("Successfully deleted %s ", id));
     }
